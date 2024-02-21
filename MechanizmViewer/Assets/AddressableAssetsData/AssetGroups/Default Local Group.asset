@@ -16,12 +16,7 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: 2a3309b1bf78f0d4ab889e49414c33b0
-  m_SerializeEntries:
-  - m_GUID: 8c029bacec90a4648a16ee39593457a0
-    m_Address: Assets/fan/Prefab/fan.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1c56519a518d31549b7a953e3c947a25, type: 2}
   m_SchemaSet:
