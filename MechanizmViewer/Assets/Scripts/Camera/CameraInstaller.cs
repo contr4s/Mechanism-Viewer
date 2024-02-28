@@ -13,7 +13,7 @@ namespace Camera
         {
             Container.Bind<CinemachineBrain>().FromInstance(_cinemachineBrain).AsSingle();
             Container.Bind<CameraSettings>().FromInstance(_settings).AsSingle();
-            Container.Bind<IInitializable>().To<CameraZoom>().AsSingle().NonLazy();
+            Container.BindInterfacesTo<CameraZoom>().AsSingle().NonLazy();
         }
     }
 }

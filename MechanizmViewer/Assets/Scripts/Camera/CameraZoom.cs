@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using Cinemachine;
 using Cysharp.Threading.Tasks;
@@ -8,20 +9,18 @@ using Zenject;
 
 namespace Camera
 {
-    public class CameraZoom : IInitializable
+    public class CameraZoom : IInitializable, IDisposable
     {
-        [SerializeField] private CinemachineBrain _cinemachineBrain;
-        [SerializeField] private CameraSettings _settings;
+        private readonly CinemachineBrain _cinemachineBrain;
+        private readonly CameraSettings _settings;
+        
+        private readonly CompositeDisposable _disposable = new CompositeDisposable();
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         
         public CameraZoom(CinemachineBrain cinemachineBrain, CameraSettings settings)
         {
             _cinemachineBrain = cinemachineBrain;
             _settings = settings;
-        }
-
-        private void Start()
-        {
-            
         }
 
         void IInitializable.Initialize()
@@ -30,9 +29,10 @@ namespace Camera
                       .Where(_ => Input.mouseScrollDelta.y != 0)
                       .Select(_ => Input.mouseScrollDelta.y)
                       .SubscribeOn(Scheduler.MainThreadEndOfFrame)
-                      .Subscribe(ZoomCamera);
+                      .Subscribe(ZoomCamera)
+                      .AddTo(_disposable);
         
-            ResetFov(CancellationToken.None).Forget();
+            ResetFov(_cts.Token).Forget();
         }
 
         private void ZoomCamera(float x)
@@ -76,6 +76,13 @@ namespace Camera
             
                 await UniTask.Yield(PlayerLoopTiming.Update, ct);
             }
+        }
+
+        void IDisposable.Dispose()
+        {
+            _disposable.Dispose();
+            _cts.Cancel();
+            _cts.Dispose();
         }
     }
 }
